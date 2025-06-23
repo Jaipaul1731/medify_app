@@ -25,7 +25,7 @@ export default function Search() {
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  //API to fetch hospitals based on state and city selection 
+  //API to fetch hospitals based on state and city selection
   useEffect(() => {
     const getHospitals = async () => {
       setHospitals([]);
@@ -101,11 +101,23 @@ export default function Search() {
                 mb={2}
                 fontWeight={500}
               >
+                {`${
+                  hospitals.length
+                } medical centers available in ${city.toLowerCase()}`}
+              </Typography>
+
+              {/* <Typography
+                component="h1"
+                fontSize={24}
+                lineHeight={1.1}
+                mb={2}
+                fontWeight={500}
+              >
                 {`${hospitals.length} medical centers available in `}
                 <span style={{ textTransform: "capitalize" }}>
                   {city.toLocaleLowerCase()}
                 </span>
-              </Typography>
+              </Typography> */}
               <Stack direction="row" spacing={2}>
                 <img src={icon} height={24} width={24} alt="icon" />
                 <Typography color="#787887" lineHeight={1.4}>
