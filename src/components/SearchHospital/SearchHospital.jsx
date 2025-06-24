@@ -55,7 +55,9 @@ export default function SearchHospital() {
   const fetchHospitals = async () => {
     try {
       const response = await axios.get(
-        `https://meddata-backend.onrender.com/data?state=${formData.state}&city=${formData.city}`
+        `https://meddata-backend.onrender.com/data?state=${
+          formData.state
+        }&city=${formData.city.toUpperCase()}`
       );
       setHospitals(response.data);
     } catch (error) {
