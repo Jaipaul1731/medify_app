@@ -22,7 +22,6 @@ export default function BookingModal({
     triggerEvent();
 
     const bookings = localStorage.getItem("bookings") || "[]";
-
     const oldBookings = JSON.parse(bookings);
 
     localStorage.setItem(
@@ -38,17 +37,13 @@ export default function BookingModal({
   };
 
   const triggerEvent = () => {
-    // Ensure dataLayer is defined
     window.dataLayer = window.dataLayer || [];
-
-    // Function to push the first_visit event to the dataLayer
     function triggerFirstVisitEvent() {
       window.dataLayer.push({
         event: "first_visit",
-        eventDate: new Date().toISOString(), // Optional: track the exact time of the event
+        eventDate: new Date().toISOString(),
       });
     }
-
     triggerFirstVisitEvent();
   };
 
@@ -108,6 +103,7 @@ export default function BookingModal({
                 variant="contained"
                 size="large"
                 disableElevation
+                id="confirmBookingBtn"
               >
                 Confirm
               </Button>
