@@ -10,6 +10,7 @@ export default function SearchHospital() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [formData, setFormData] = useState({ state: "", city: "" });
+  const [hospitals, setHospitals] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,13 +37,12 @@ export default function SearchHospital() {
           `https://meddata-backend.onrender.com/cities/${formData.state}`
         );
         setCities(data.data);
-        // console.log("city", data.data);
       } catch (error) {
         console.log("Error in fetching city:", error);
       }
     };
 
-    if (formData.state != "") {
+    if (formData.state !== "") {
       fetchCities();
     }
   }, [formData.state]);
@@ -52,14 +52,21 @@ export default function SearchHospital() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const fetchHospitals = async () => {
+    try {
+      const response = await axios.get(
+        `https://meddata-backend.onrender.com/data?state=${formData.state}&city=${formData.city}`
+      );
+      setHospitals(response.data);
+    } catch (error) {
+      console.error("Error fetching hospitals:", error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.state && formData.city) {
-      navigate(
-        `/search?state=${formData.state}&city=${formData.city.toUpperCase()}`
-      );
-
-      // navigate(`/search?state=${formData.state}&city=${formData.city.toUpperCase()}`);
+      fetchHospitals();
     }
   };
 
@@ -88,7 +95,7 @@ export default function SearchHospital() {
         required
         sx={{ minWidth: 200, width: "100%" }}
       >
-        <MenuItem disabled value="" selected>
+        <MenuItem disabled value="">
           State
         </MenuItem>
         {states.map((state) => (
@@ -112,7 +119,7 @@ export default function SearchHospital() {
         required
         sx={{ minWidth: 200, width: "100%" }}
       >
-        <MenuItem disabled value="" selected>
+        <MenuItem disabled value="">
           City
         </MenuItem>
         {cities.map((city) => (
@@ -129,9 +136,17 @@ export default function SearchHospital() {
         startIcon={<SearchIcon />}
         sx={{ py: "15px", px: 8, flexShrink: 0 }}
         disableElevation
+        id="searchBtn"
       >
         Search
       </Button>
+
+      {hospitals.length > 0 && (
+        <h1>
+          {hospitals.length} medical centers available in{" "}
+          {formData.city.toLowerCase()}
+        </h1>
+      )}
     </Box>
   );
 }
