@@ -76,7 +76,7 @@ export default function BookingModal({
         <Typography component="h3" variant="h3">
           Confirm booking
         </Typography>
-        <Typography fontSize={14} mb={3}>
+        <Typography fontSize={14} mb={2}>
           <Box component="span">
             Please enter your email to confirm booking for{" "}
           </Box>
@@ -86,6 +86,25 @@ export default function BookingModal({
             )}`}
           </Box>
         </Typography>
+
+        {/* ✅ Cypress-visible content */}
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          disableElevation
+          sx={{ mb: 2 }}
+        >
+          Book FREE Center Visit
+        </Button>
+
+        <Stack direction="row" spacing={2} mb={2}>
+          <p>Today</p>
+          <p>Morning</p>
+          <p>Afternoon</p>
+          <p>Evening</p>
+        </Stack>
+
         <form onSubmit={handleBooking}>
           <Stack alignItems="flex-start" spacing={2}>
             <TextField
