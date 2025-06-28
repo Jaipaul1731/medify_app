@@ -1,25 +1,17 @@
-import {
-  MenuItem,
-  Select,
-  Button,
-  InputAdornment,
-  Box,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { MenuItem, Select, Button, InputAdornment, Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import HospitalCard from "../HospitalCard/HospitalCard"; // ✅ Ensure this path matches your actual folder
 
+//Component to search the hospitals based on State and City selection.
+//API used to fetch details of hospital and set the values in formData
 export default function SearchHospital() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [formData, setFormData] = useState({ state: "", city: "" });
   const [hospitals, setHospitals] = useState([]);
   const navigate = useNavigate();
-  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     const fetchStates = async () => {
@@ -32,6 +24,7 @@ export default function SearchHospital() {
         console.error("Error fetching states:", error);
       }
     };
+
     fetchStates();
   }, []);
 
@@ -48,6 +41,7 @@ export default function SearchHospital() {
         console.log("Error in fetching city:", error);
       }
     };
+
     if (formData.state !== "") {
       fetchCities();
     }
@@ -66,7 +60,6 @@ export default function SearchHospital() {
         }&city=${formData.city.toUpperCase()}`
       );
       setHospitals(response.data);
-      setIsSearched(true);
     } catch (error) {
       console.error("Error fetching hospitals:", error);
     }
@@ -80,103 +73,82 @@ export default function SearchHospital() {
   };
 
   return (
-    <Box>
-      {/* 🔍 Search Form */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          gap: 4,
-          justifyContent: "space-between",
-          flexDirection: { xs: "column", md: "row" },
-        }}
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: "flex",
+        gap: 4,
+        justifyContent: "space-between",
+        flexDirection: { xs: "column", md: "row" },
+      }}
+    >
+      <Select
+        displayEmpty
+        id="state"
+        name="state"
+        value={formData.state}
+        onChange={handleChange}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        }
+        required
+        sx={{ minWidth: 200, width: "100%" }}
       >
-        <Select
-          displayEmpty
-          id="state"
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          }
-          required
-          sx={{ minWidth: 200, width: "100%" }}
-        >
-          <MenuItem disabled value="">
-            State
+        <MenuItem disabled value="">
+          State
+        </MenuItem>
+        {states.map((state) => (
+          <MenuItem key={state} value={state}>
+            {state}
           </MenuItem>
-          {states.map((state) => (
-            <MenuItem key={state} value={state}>
-              {state}
-            </MenuItem>
-          ))}
-        </Select>
+        ))}
+      </Select>
 
-        <Select
-          displayEmpty
-          id="city"
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          }
-          required
-          sx={{ minWidth: 200, width: "100%" }}
-        >
-          <MenuItem disabled value="">
-            City
+      <Select
+        displayEmpty
+        id="city"
+        name="city"
+        value={formData.city}
+        onChange={handleChange}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        }
+        required
+        sx={{ minWidth: 200, width: "100%" }}
+      >
+        <MenuItem disabled value="">
+          City
+        </MenuItem>
+        {cities.map((city) => (
+          <MenuItem key={city} value={city}>
+            {city}
           </MenuItem>
-          {cities.map((city) => (
-            <MenuItem key={city} value={city}>
-              {city}
-            </MenuItem>
-          ))}
-        </Select>
+        ))}
+      </Select>
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          startIcon={<SearchIcon />}
-          sx={{ py: "15px", px: 8, flexShrink: 0 }}
-          disableElevation
-          id="searchBtn"
-        >
-          Search
-        </Button>
-      </Box>
+      <Button
+        type="submit"
+        variant="contained"
+        size="large"
+        startIcon={<SearchIcon />}
+        sx={{ py: "15px", px: 8, flexShrink: 0 }}
+        disableElevation
+        id="searchBtn"
+      >
+        Search
+      </Button>
 
-      {/* 🏥 Result Heading */}
-      {isSearched && (
-        <Typography variant="h5" mt={4}>
+      {hospitals.length > 0 && (
+        <h1>
           {hospitals.length} medical centers available in{" "}
           {formData.city.toLowerCase()}
-        </Typography>
+        </h1>
       )}
-
-      {/* 📋 Hospital Cards */}
-      <Stack spacing={2} mt={2}>
-        {hospitals.map((center, index) => (
-          <HospitalCard
-            key={index}
-            name={center["Hospital Name"]}
-            city={center.City}
-            state={center.State}
-            rating={center["Hospital overall rating"]}
-            onClick={() => {
-              localStorage.setItem("selectedHospital", JSON.stringify(center));
-              navigate("/book-appointment");
-            }}
-          />
-        ))}
-      </Stack>
     </Box>
   );
 }
